@@ -2,6 +2,8 @@
 namespace App\Entity;
 
 use App\Repository\CocktailRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Doctrine\ORM\Mapping\HasLifecycleCallbacks;
 use Doctrine\ORM\Mapping\PrePersist;
@@ -21,9 +23,16 @@ class Cocktail
     #[ORM\Column]
     private ?\DateTimeImmutable $createdAt = null;
 
+    /**
+     * @var Collection<int, Ingredient>
+     */
+    #[ORM\ManyToMany(targetEntity: Ingredient::class, inversedBy: 'cocktails')]
+    private Collection $ingredients;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
+        $this->ingredients = new ArrayCollection();
     }
 
     #[PrePersist]
@@ -57,6 +66,30 @@ class Cocktail
     public function setCreatedAt(\DateTimeImmutable $createdAt): static
     {
         $this->createdAt = $createdAt;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Ingredient>
+     */
+    public function getIngredients(): Collection
+    {
+        return $this->ingredients;
+    }
+
+    public function addIngredient(Ingredient $ingredient): static
+    {
+        if (!$this->ingredients->contains($ingredient)) {
+            $this->ingredients->add($ingredient);
+        }
+
+        return $this;
+    }
+
+    public function removeIngredient(Ingredient $ingredient): static
+    {
+        $this->ingredients->removeElement($ingredient);
 
         return $this;
     }
