@@ -12,6 +12,17 @@
         {% endblock %}
     </head>
     <body>
+        <nav>
+            <ul>
+                <li>
+                    <a href="{{ path('app_cocktail_new') }}">Ajouter Cocktail<a>
+                </li>
+                <li>
+                    <a href="{{ path('app_ingredient_new') }}">Ajouter Ingredient <a>
+                </li>
+            </ul>
+        </nav>
         {% block body %}{% endblock %}
+
     </body>
 </html>
